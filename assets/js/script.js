@@ -1,33 +1,56 @@
-//GOES TO DOM FILE, LOCATES ELEMENT BY ID, GIVES THEM A VARIABLE TO BE MANIPULATED LATER
-var formEl = document.querySelector("#task-form")
+//search DOM to find HTML elements
+var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 
 
-//FUNCTION TO ADD ITEM TO LIST
-var createTaskHandler = function() {
 
-  //PREVENTS THE PAGE FROM RELOADING AFTER EVERY SUBMIT
+
+
+//function to collect data
+var taskFormHandler = function(event) {
+  //prevent function from reloading page
   event.preventDefault();
-
-  //Finds value of input, and makes it a variable
+  //search DOM to find input values
   var taskNameInput = document.querySelector("input[name='task-name']").value;
   var taskTypeInput = document.querySelector("select[name='task-type']").value;
-  
+
+  // check if input values are empty strings
+  if (!taskNameInput || !taskTypeInput) {
+    alert("You need to fill out the task form!");
+    return false;
+  }
+
+  formEl.reset();
+
+  // package up data as an object
+  var taskDataObj = {
+      name: taskNameInput,
+      type: taskTypeInput
+  };
+
+  // send it as an argument to createTaskEl
+  createTaskEl(taskDataObj);
+};
+
+
+
+
+
+//second function to retrieve and manipulate data
+var createTaskEl = function (taskDataObj) {
   // create list item
   var listItemEl = document.createElement("li");
   listItemEl.className = "task-item";
 
   // create div to hold task info and add to list item
   var taskInfoEl = document.createElement("div");
-    // give it a class name
-    taskInfoEl.className = "task-info";
-    // add HTML content to div
-    taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskNameInput + "</h3><span class='task-type'>" + taskTypeInput + "</span>";
-
-    listItemEl.appendChild(taskInfoEl);
+  taskInfoEl.className = "task-info";
+  taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
+  listItemEl.appendChild(taskInfoEl);
 
   // add entire list item to list
   tasksToDoEl.appendChild(listItemEl);
 };
 
-formEl.addEventListener("submit", createTaskHandler);
+//run function when submit is made
+formEl.addEventListener("submit", taskFormHandler);
